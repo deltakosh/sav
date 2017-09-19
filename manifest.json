@@ -1,0 +1,44 @@
+{
+  "manifest_version": 2,
+
+  "name": "SAV",
+  "short_name": "SAV",
+  "description": "Système d'Amélioration de la Vie",
+  "version": "1.0",
+  "author": "@deltakosh",
+  
+  "icons": { 
+          "48": "icons/icon48.png",
+          "128": "icons/icon128.png" 
+  },
+  "page_action" :
+  {
+    "default_icon" : {
+      "19": "icons/icon16.png" 
+    },
+    "default_title" : "S.A.V",
+    "default_popup": "popup.html" 
+  },
+  "background": {
+      "persistent": true,
+      "scripts": ["background.js"]
+  },
+  "content_scripts" : [
+    {
+      "matches" : [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js" : ["contentScript.js"],
+      "run_at" : "document_start",
+      "all_frames" : true
+    }
+  ],
+  "web_accessible_resources": [
+    "popup.js"
+  ],  
+  "permissions": [
+    "tabs", "http://*/*", "https://*/*", "storage"
+  ]
+}
