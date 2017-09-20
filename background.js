@@ -23,3 +23,5 @@ listenForMessage(function(request, sender, sendResponse) {
 // https://investir.lesechos.fr/actions/actualites/exclusif-ue-google-propose-un-systeme-d-encheres-aux-comparateurs-concurrents-1706157.php#
 
 // http://www.getyellow.io/en/about-us/
+
+// https://www.lesechos.fr/tech-medias/hightech/030589488781-amazon-pourrait-lancer-des-lunettes-connectees-equipees-dalexa-2115739.php
