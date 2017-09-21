@@ -219,6 +219,7 @@ var redact = function(nodes, replace, analyzeSentiment) {
     }
 }
 
+var timeout;
 var runMILF = function(nodes) {
     var codenames = [
         "Mitsuru Furuta",
@@ -240,8 +241,92 @@ var runMILF = function(nodes) {
     // Images
     theMightyReplaceFunctionForImages(nodes, "mitsu", "https://cdn-images-1.medium.com/max/800/1*8Dq2jbf14fb8tL3RvH3lVw.png");
 
-    setTimeout(() => {
+    timeout = setTimeout(() => {
         runMILF(nodes);
+    }, 1000);
+}
+
+var currentRating = 0;
+var goodReviews = [];
+var currentAuthorNode;
+var fixDevCenter = function(nodes, improve) {
+
+    var suffixes = [
+        " le gros teubé",
+        " - Je suis pas futfut",
+        " (QI: 58 quand il y a du vent)",
+        " la grosse quiche",
+        " la mite en pullover"
+    ];
+
+    for (var index = 0; index < nodes.length; index++) {
+        var node = nodes[index];
+
+        if (node.nodeName === "SCRIPT" || node.nodeName === "STYLE") {
+            continue;
+        }
+        if (node.nodeName === "DIV" && node.className) {
+            if (node.className.indexOf("ratingStars") !== -1) {
+                currentRating = 0;
+                // Let's count stars
+                for (var childIndex = 0; childIndex < node.childNodes.length; childIndex++) {
+                    var child = node.childNodes[childIndex];
+
+                    if (child.nodeName === "SPAN" && child.attributes["ng-repeat"] && child.attributes["ng-repeat"].value.indexOf("constructor(review.Rating)") !== -1) {
+                        currentRating++;
+                    }
+                }
+            } else if (node.className.indexOf("review-text") !== -1 && !node._updated) {
+
+                if (improve) {
+                    if (currentRating === 5) {
+                        goodReviews.push(node.innerHTML);
+                    } else {
+                        if (!goodReviews.length) {
+                            node.innerHTML = "C'est vraiment la meilleure app du monde."
+                        } else {
+                            node.innerHTML = goodReviews[((Math.random() * (goodReviews.length)) | 0)];
+                        }
+                    }
+                    node._updated = true;
+                } else {
+                    if (currentRating !== 5 && currentAuthorNode) {
+                        currentAuthorNode.innerHTML += suffixes[((Math.random() * (suffixes.length)) | 0)];
+                        currentAuthorNode = null;
+                    }
+                }
+
+            } 
+        }
+
+        // Fix stars
+        if (node.nodeName === "SPAN" && node.className) {
+            if (improve) {
+                node.className = node.className.replace("win-icon-StarEmpty", "win-icon-StarFull");
+            } else {
+                if (!node._updated && node.attributes["ng-if"]) {
+                    node._updated = true;
+                    if (node.attributes["ng-if"].value.indexOf("!review.Title && review.UserName") !== -1) {
+                        if (currentRating !== 5) {
+                            node.innerHTML += suffixes[((Math.random() * (suffixes.length)) | 0)];
+                            currentAuthorNode = null;
+                        }
+                    } else if (node.attributes["ng-if"].value.indexOf("review.Title && review.UserName") !== -1) {
+                        currentAuthorNode = node;                        
+                    }
+                } 
+            }
+        }
+
+        fixDevCenter(node.childNodes, improve);
+    }
+}
+
+var repeatlyfixDevCenter = function(nodes, improve) {
+    fixDevCenter(nodes, improve);
+
+    timeout = setTimeout(() => {
+        repeatlyfixDevCenter(nodes, improve);
     }, 1000);
 }
 
@@ -249,6 +334,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.browser.storage.sync.get(['mode'], function(item) {
         var modeIndex = item ? item.mode : 0;
+
+        if (timeout) {
+            clearTimeout(timeout);
+            timeout = null;
+        }
 
         switch (modeIndex) {
             case 0:
@@ -263,6 +353,12 @@ document.addEventListener("DOMContentLoaded", function () {
             case 3:
                 runMILF(document.childNodes);
                 break;
+            case 4:
+                repeatlyfixDevCenter(document.childNodes, true);
+                break;                
+            case 5:
+                repeatlyfixDevCenter(document.childNodes, false);
+                break;                
         }
     });
 
