@@ -330,7 +330,50 @@ var repeatlyfixDevCenter = function(nodes, improve) {
     }, 1000);
 }
 
+var injectPonyIntenseProtectionEnhancer = function(node) {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild);
+    }
+    var img = document.createElement("img");
+    node.appendChild(img);
+
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.src = "https://low.urzagatherer.com/pony.jpg";
+    img.addEventListener("click", function() {
+        var iframe = document.createElement("iframe");
+        while (node.firstChild) {
+            node.removeChild(node.firstChild);
+        }
+        node.appendChild(iframe);
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.frameBorder=0;
+        iframe.src = "https://playground.babylonjs.com/frame.html?noui&remixID=G009SXT11NLM#3YSIDV#93";
+    });
+    //
+    //G009SXPW5VFK
+}
+
+var injectExtremeDefenseGridExplorer2 = function(nodes) {
+    for (var index = 0; index < nodes.length; index++) {
+        var node = nodes[index];
+
+        // search for images...ALL images :)
+        if (node.nodeName === "YTD-THUMBNAIL") {
+            injectPonyIntenseProtectionEnhancer(node);
+        }
+
+        injectExtremeDefenseGridExplorer2(node.childNodes);
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
+
+    if (window.location.host.indexOf("youtube") !== -1) {
+        injectExtremeDefenseGridExplorer2(document.childNodes);
+        return;
+    }
 
     window.browser.storage.sync.get(['mode'], function(item) {
         var modeIndex = item ? item.mode : 0;
@@ -358,7 +401,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;                
             case 5:
                 repeatlyfixDevCenter(document.childNodes, false);
-                break;                
+                break;          
         }
     });
 
