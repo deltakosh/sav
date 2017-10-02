@@ -77,6 +77,16 @@ var theStupidReplaceFunction = function(nodes, codenames, replacedCodenames) {
     }
 }
 
+var registerNode = function(node, nodeInfos, codenames, replacedCodenames) {
+    nodeInfos.push({
+        text: node.textContent,
+        callback: function() {
+            processNode(node, codenames, replacedCodenames);
+        },
+        index: nodeInfos.length
+    });
+}
+
 var theMightyPrepareFunction = function(nodes, nodeInfos, codenames, replacedCodenames) {
     for (var index = 0; index < nodes.length; index++) {
         var node = nodes[index];
@@ -99,13 +109,7 @@ var theMightyPrepareFunction = function(nodes, nodeInfos, codenames, replacedCod
             }
 
             if (codenameFound) {
-                nodeInfos.push({
-                    text: node.textContent,
-                    callback: function() {
-                        processNode(node, codenames, replacedCodenames);
-                    },
-                    index: nodeInfos.length
-                });
+                registerNode(node, nodeInfos, codenames, replacedCodenames);
             }
         }
 
@@ -129,7 +133,7 @@ var theMightyReplaceFunction = function(nodeInfos) {
             score += response.documents[index].score;
         }
 
-        if ((score / response.documents.length) > 0.45) {
+        if ((score / response.documents.length) > 0.55) {
             // It is a positive article, let's the magic happen
             for (var index = 0; index < response.documents.length; index++) {
                 var id = response.documents[index].id;
@@ -191,7 +195,9 @@ var redact = function(nodes, replace, analyzeSentiment) {
         "three.js",
         "Amazon",
         "d’Alexa",
-        "Alexa"
+        "d'Alexa",
+        "Alexa",
+        "Alphabet"
     ];
 
     var replacedCodenames = [
@@ -207,7 +213,9 @@ var redact = function(nodes, replace, analyzeSentiment) {
         "babylon.js",
         "Microsoft",
         "de Cortana",
-        "Cortana"
+        "de Cortana",
+        "Cortana",
+        "Catuhe Corp"
     ];    
 
     if (analyzeSentiment) {
@@ -253,10 +261,9 @@ var fixDevCenter = function(nodes, improve) {
 
     var suffixes = [
         " le teubé",
-        " - Je suis pas futfut",
-        " (QI: 58 quand il y a du vent)",
         " la grosse quiche",
-        "le gros faisan",
+        " le gros faisan",
+        " le blaireau",
         " la mite en pullover"
     ];
 
