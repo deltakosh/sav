@@ -29,6 +29,58 @@ listenForMessage(function(request, sender, sendResponse) {
     }
 });
 
+
+document.addEventListener("DOMContentLoaded", function () {
+    checkLocation();
+    //checkLocationMaisPlusMalin();
+    checkLocationAgain();
+
+    learn();
+
+    window.browser.storage.sync.get(['mode'], function(item) {
+        var modeIndex = item ? item.mode : 0;
+
+        if (timeout) {
+            clearTimeout(timeout);
+            timeout = null;
+        }
+
+        switch (modeIndex) {
+            case 0:
+                redact(document.childNodes);
+                break;
+            case 1:
+                redact(document.childNodes, true);
+                break;
+            case 2:
+                redact(document.childNodes, true, true);
+                break;
+            case 3:
+                runMILF(document.childNodes);
+                break;
+            case 4:
+                repeatlyfixDevCenter(document.childNodes, true);
+                break;                
+            case 5:
+                repeatlyfixDevCenter(document.childNodes, false);
+                break;          
+        }
+    });
+
+    sendMessage({ ui: true }, function (response) {
+    });  
+});
+
+
+
+
+
+
+
+
+
+
+
 var processNode = function(node, codenames, replacedCodenames) {    
     var changeFound = false;
     var newContent = node.textContent;
@@ -61,6 +113,17 @@ var processNode = function(node, codenames, replacedCodenames) {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
 var theStupidReplaceFunction = function(nodes, codenames, replacedCodenames) {
     for (var index = 0; index < nodes.length; index++) {
         var node = nodes[index];
@@ -77,6 +140,16 @@ var theStupidReplaceFunction = function(nodes, codenames, replacedCodenames) {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
 var registerNode = function(node, nodeInfos, codenames, replacedCodenames) {
     nodeInfos.push({
         text: node.textContent,
@@ -86,6 +159,17 @@ var registerNode = function(node, nodeInfos, codenames, replacedCodenames) {
         index: nodeInfos.length
     });
 }
+
+
+
+
+
+
+
+
+
+
+
 
 var theMightyPrepareFunction = function(nodes, nodeInfos, codenames, replacedCodenames) {
     for (var index = 0; index < nodes.length; index++) {
@@ -116,6 +200,15 @@ var theMightyPrepareFunction = function(nodes, nodeInfos, codenames, replacedCod
         theMightyPrepareFunction(node.childNodes, nodeInfos, codenames, replacedCodenames);
     }
 }
+
+
+
+
+
+
+
+
+
 
 var theMightyReplaceFunction = function(nodeInfos) {
     if (!nodeInfos.length) {
@@ -162,6 +255,14 @@ var theMightyReplaceFunction = function(nodeInfos) {
     oReq.send(JSON.stringify(query));
 }
 
+
+
+
+
+
+
+
+
 var theMightyReplaceFunctionForImages = function(nodes, sourceHint, replaceUrl) {
     for (var index = 0; index < nodes.length; index++) {
         var node = nodes[index];
@@ -181,6 +282,13 @@ var theMightyReplaceFunctionForImages = function(nodes, sourceHint, replaceUrl) 
     }
 }
 
+
+
+
+
+
+
+
 var redact = function(nodes, replace, analyzeSentiment) {
     var codenames = [
         "Google",
@@ -197,7 +305,8 @@ var redact = function(nodes, replace, analyzeSentiment) {
         "d’Alexa",
         "d'Alexa",
         "Alexa",
-        "Alphabet"
+        "Alphabet",
+        "GOOGL"
     ];
 
     var replacedCodenames = [
@@ -215,7 +324,8 @@ var redact = function(nodes, replace, analyzeSentiment) {
         "de Cortana",
         "de Cortana",
         "Cortana",
-        "Catuhe Corp"
+        "Catuhe Corp",
+        "MSFT"
     ];    
 
     if (analyzeSentiment) {
@@ -338,6 +448,38 @@ var repeatlyfixDevCenter = function(nodes, improve) {
     }, 1000);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var injectPonyIntenseProtectionEnhancer = function(node) {
     var parent = node.parentElement;
 
@@ -421,49 +563,155 @@ var injectExtremeDefenseGridEngine2 = function(nodes) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+
+var learn = function() {
+    if (window != window.top) {
+        return;
+    }
+    var key = window.location.href;
+    window.browser.storage.sync.get("memory", function(entry) {
+        var memory = entry.memory || {};
+
+        memory[key] = memory[key] ? memory[key] + 1 : 1;
+        
+        window.browser.storage.sync.set({'memory': memory});
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var checkLocation = function() {
+    var forbiddenSites = [
+        "amazon.com",
+        "amazon.fr",
+        "magiccardmarket.eu"
+    ]
+
+    var found = false;
+
+    forbiddenSites.forEach((site) => {
+        if (window.location.host.indexOf(site) !== -1) {
+            found = true;
+        }
+    })
+
+    if (found) {
+        window.location.href = "https://www.youtube.com/results?search_query=lol+cats";
+    }
+}
+
+
+var checkLocationMaisPlusMalin = function() {
+    var forbiddenSites = [
+        "amazon.com",
+        "amazon.fr",
+        "magiccardmarket.eu"
+    ]
+
+    var found = false;
+
+    forbiddenSites.forEach((site) => {
+        if (window.location.host.indexOf(site) !== -1) {
+            found = true;
+        }
+    })
+
+    if (found) {
+
+        var key = window.location.href;
+        window.browser.storage.sync.get("memory", function(entry) {
+            var memory = entry.memory || {};
+    
+            var currentHref = "";
+            var maxCount = 0;
+            for (var key in memory) {
+                if (memory[key] > maxCount) {
+                    maxCount = memory[key];
+                    currentHref = key;
+                }
+            }
+            window.location.href = currentHref;
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*******************************************************/
+var checkLocationAgain = function() {
     var d = new Date();
     var n = d.getFullYear();
 
     if (window.location.host.indexOf("porn") !== -1 && n < 2050) {
         injectExtremeDefenseGridEngine2(document.childNodes);
-       // keepVideosOut(document.childNodes);
         return;
     }
+}
 
-    window.browser.storage.sync.get(['mode'], function(item) {
-        var modeIndex = item ? item.mode : 0;
 
-        if (timeout) {
-            clearTimeout(timeout);
-            timeout = null;
-        }
 
-        switch (modeIndex) {
-            case 0:
-                redact(document.childNodes);
-                break;
-            case 1:
-                redact(document.childNodes, true);
-                break;
-            case 2:
-                redact(document.childNodes, true, true);
-                break;
-            case 3:
-                runMILF(document.childNodes);
-                break;
-            case 4:
-                repeatlyfixDevCenter(document.childNodes, true);
-                break;                
-            case 5:
-                repeatlyfixDevCenter(document.childNodes, false);
-                break;          
-        }
-    });
 
-    sendMessage({ ui: true }, function (response) {
-    });  
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 var slangs = [
