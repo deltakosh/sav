@@ -1,4 +1,4 @@
-# sav
+# S.A.V.
 
 Bienvenue sur le repo de SAV: Système d'Amélioration de la Vie présenté durant la Coding4Fun 2017
 Pour en savoir plus:
